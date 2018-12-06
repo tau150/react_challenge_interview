@@ -1,6 +1,6 @@
-import React from "react";
-import Item from "./Item";
-import styled from "styled-components";
+import React from 'react';
+import Item from './Item';
+import styled from 'styled-components';
 
 const StyledDiv = styled.div`
   width: 50%;

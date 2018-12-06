@@ -1,9 +1,11 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import "./App.css";
-import Counter from "./Counter";
-import Modal from "./Modal";
-import ItemsList from "./ItemsList";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import './App.css';
+import Counter from './components/Counter';
+import Modal from './components/Modal';
+import ItemsList from './components/ItemsList';
+import Loading from './components/Loading';
+import { getItems, deleteItem, addItem } from './api';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -36,12 +38,17 @@ const StyledDiv = styled.div`
 class App extends Component {
   state = {
     modalActive: false,
-    itemsList: []
+    itemsList: [],
+    loading: false,
   };
 
   componentDidMount() {
-    const preExistedItems = JSON.parse(localStorage.getItem("items"));
-    this.setState({ itemsList: preExistedItems });
+    this.setState({ loading: true });
+    getItems().then(items => {
+      if (items) {
+        this.setState({ itemsList: items, loading: false });
+      }
+    });
   }
 
   hancleClickAddItem = () => {
@@ -53,17 +60,27 @@ class App extends Component {
   };
 
   handleDeleteItem = itemToDelete => {
-    const newItemList = this.state.itemsList.filter(
-      item => item !== itemToDelete
-    );
-
-    this.setState({ itemsList: newItemList });
+    this.setState({ loading: true });
+    deleteItem().then(response => {
+      const newItemList = this.state.itemsList.filter(
+        item => item !== itemToDelete
+      );
+      this.setState({ itemsList: newItemList, loading: false });
+      localStorage.setItem('items', JSON.stringify(newItemList));
+    });
   };
 
   handleAddItem = item => {
-    const newItemList = [...this.state.itemsList, item];
-    this.setState({ itemsList: newItemList, modalActive: false });
-    localStorage.setItem("items", JSON.stringify(newItemList));
+    this.setState({ loading: true });
+    addItem(item).then(response => {
+      const newItemList = [...this.state.itemsList, item];
+      this.setState({
+        itemsList: newItemList,
+        modalActive: false,
+        loading: false,
+      });
+      localStorage.setItem('items', JSON.stringify(newItemList));
+    });
   };
 
   render() {
@@ -75,8 +92,11 @@ class App extends Component {
       />
     ) : null;
 
+    const loading = this.state.loading ? <Loading /> : null;
+
     return (
       <StyledDiv>
+        {loading}
         <h1>Supermarket List</h1>
         <Counter numberOfItems={this.state.itemsList.length} />
         <ItemsList
