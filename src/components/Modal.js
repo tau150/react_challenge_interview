@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import styled from "styled-components";
+import React, { Component } from 'react';
+import styled from 'styled-components';
 
 const Backdrop = styled.div`
   width: 100%;
@@ -25,6 +25,7 @@ const ModalBody = styled.div`
 
   input {
     height: 50px;
+    font-size: 22px;
   }
 
   p {
@@ -34,10 +35,20 @@ const ModalBody = styled.div`
   .buttons-container {
     margin-top: 5%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
 
     button {
       width: 20%;
+      cursor: pointer;
+      background: #fff;
+      color: #000;
+      border: 1px solid #777;
+    }
+
+    .add-button {
+      color: #fff;
+      background: #cccccc;
+      border: none;
     }
   }
 `;
@@ -46,13 +57,13 @@ class Modal extends Component {
   state = {
     item: null,
     firstTry: true,
-    alreadyExists: false
+    alreadyExists: false,
   };
 
   handleChangeInput = e => {
     const itemData = e.target.value;
 
-    if (e.target.value !== "") {
+    if (e.target.value !== '') {
       this.setState({ item: itemData, firstTry: false, alreadyExists: false });
     }
   };
@@ -89,7 +100,9 @@ class Modal extends Component {
             <button onClick={this.props.hancleClickCancelAddItem}>
               Cancel
             </button>
-            <button onClick={this.handleClickSaveItem}>Add</button>
+            <button className="add-button" onClick={this.handleClickSaveItem}>
+              Add
+            </button>
           </div>
         </ModalBody>
       </Backdrop>
