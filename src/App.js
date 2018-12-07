@@ -47,6 +47,8 @@ class App extends Component {
     getItems().then(items => {
       if (items) {
         this.setState({ itemsList: items, loading: false });
+      } else {
+        this.setState({ loading: false });
       }
     });
   }
